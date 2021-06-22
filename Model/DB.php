@@ -17,11 +17,10 @@ class DB
             return($conexionDB);
         }
         catch(PDOException $e){
-            echo("Ha ocurrido el error al tatar de conectarse con la base de datos <br/>Código: ".$e->getCode()."<br/> Mensaje: ".$e->getMessage());
+            throw new Exception('No se ha podido conectar a la base de datos');
         }
     }
     public function addData($consultaSQL){
-        
         try{
             //Establecer la conexion
             $conexionDB=$this->conectarDB();
@@ -34,7 +33,7 @@ class DB
             return $resultado;
         }
         catch(PDOException $e){
-            echo($e->errorInfo);
+            throw new Exception('Ha ocurrido un error durante al tratar de agregar un registro');
         }
     }
 
@@ -55,7 +54,7 @@ class DB
             return $consultarDatos->fetchAll();
         }
         catch(PDOException $e){
-            echo($e->errorInfo);
+            throw new Exception('Ha ocurrido un error durante al tratar de trater la informacion de la base de datos');
         }
     }
 
@@ -73,7 +72,7 @@ class DB
             return(true);
         }
         catch(PDOException $e){
-            return("Ha ocurrido un error durante la consulta ".$e->getMessage());
+            throw new Exception('Ha ocurrido un error durante al tratar de eliminar un registro');
         }
     }
 
@@ -91,7 +90,7 @@ class DB
             return("se realizó la actualización con exito");
         }
         catch(PDOException $e){
-            echo("Ha ocurrido un error durante la consulta ".$e->getMessage());
+            throw new Exception('Ha ocurrido un error durante al tratar de actualizar un registro');
         }
     }
 }

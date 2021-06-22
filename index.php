@@ -48,8 +48,12 @@
               $db1=new Db();
               $db1->conectarDB();
               $id_apartment = $apartment['id_apartamento'];
-              $sql = "select*from factura F inner join apartamentos A on A.id_apartamento=F.id_apartamento where A.id_apartamento={$id_apartment}";
-              $faturas = $db1->getData($sql);
+              $sql = "select P.email,P.nombre,A.id_apartamento,A.valor_cuota,A.numero_apartamento,A.numero_personas
+              ,f.id_factura,f.total,f.mora,f.fecha_creacion
+              from factura F inner join apartamentos A on A.id_apartamento=F.id_apartamento inner join apartamento_usuario AU on AU.id_apartamento=A.id_apartamento inner join propietarios P on P.id_usuario=AU.id_usuario where A.id_apartamento={$id_apartment}";
+              $facturas = $db1->getData($sql);
+              $jsonFacturas = json_encode ((array) $facturas);
+              $jsonApartamentos = json_encode((array) $apartment);
               ?>
             <div class="col-lg-4 col-6">
               <!-- small box -->
@@ -75,7 +79,7 @@
                 <div class="icon">
                   <i class="fas fa-building"></i>
                 </div>
-                <a href="#" class="small-box-footer"  data-toggle="modal" data-target="#modal-detail-apartment" onclick='detailApartment(<?php print_r(json_encode ((array) $faturas));?>)'>mas información<i class="fas fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer"  data-toggle="modal" data-target="#modal-detail-apartment" onclick='detailApartment(<?php print_r("{$jsonApartamentos},{$jsonFacturas}");?>)'>mas información<i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
           <?php endforeach;?>
@@ -86,9 +90,7 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-
   <?php require_once('layouts/footer.php');?>
-
   <!-- Add apartment -->
   <div class="modal fade" id="modal-add">
     <div class="modal-dialog modal-lg">
@@ -125,7 +127,12 @@
                   <input type="text" class="form-control" id="valorCuotaInput" name="cuota" required>
                 </div>
               </div>
-            
+              <div class="row">
+                <div class="col-sm-12">
+                  <label for="propietario" class="form-label">Identificacion del propietario</label>
+                  <input type="text" class="form-control" id="propietario" name="propietario" required>
+                </div>
+              </div>
           </div>
           <div class="modal-footer justify-content-between">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -185,6 +192,65 @@
 
           </div>
         </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-notificacion" id="notificacion">Enviar Correo</button>
+          </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+  <!-- Enviar Correos -->
+  <div class="modal fade" id="modal-notificacion">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Notificar</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+          <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-6 col-sm-offset-3 form-group">
+                <label>
+                    Nombre:
+                </label>
+                <input class="form-control" type="text" id="name" disabled>
+                </input>
+            </div>
+            <div class="col-sm-6 col-sm-offset-3 form-group">
+                <label>
+                    Correo que recibe:
+                </label>
+                <input class="form-control" type="email" id="email" disabled>
+                </input>
+            </div>
+            <div class="col-sm-12 col-sm-offset-3 form-group">
+                <label>
+                    Asunto:
+                </label>
+                <input class="form-control" type="text" id="subject">
+                </input>
+            </div>
+            <div class="col-sm-12 col-sm-offset-3 form-group">
+                <label>
+                    Mensaje:
+                </label>
+                <textarea class="form-control" rows="8" id="message">
+                </textarea>
+            </div>
+            <div class="col-sm-6 col-sm-offset-3 text-center">
+                
+            </div>
+        </div>
+          </div>
+          <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-success" onclick="enviarEmail()">Enviar</button>
+          </div>
       </div>
       <!-- /.modal-content -->
     </div>

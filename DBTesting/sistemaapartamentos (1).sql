@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-06-2021 a las 05:08:20
+-- Tiempo de generación: 22-06-2021 a las 03:53:11
 -- Versión del servidor: 10.4.11-MariaDB
 -- Versión de PHP: 7.4.2
 
@@ -32,14 +32,15 @@ BEGIN
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `GenerarFacturas` (IN `fecha` DATE)  BEGIN
-	    UPDATE factura SET mora=1 where DATEDIFF(fecha,fecha_creacion)>1 and pago=0 and mora=0 and estado=1;
+	    UPDATE factura SET mora=1 where DATEDIFF(fecha,fecha_creacion)>=1 and pago=0 and mora=0 and estado=1;
 
-	INSERT INTO `factura`(`total`, `fecha_creacion`, `id_apartamento`,`pago` ,`estado`) 
+INSERT INTO `factura`(`total`, `fecha_creacion`, `id_apartamento`,`pago` ,`estado`) 
 		SELECT IF(AP.arrendado=0, AP.valor_cuota, AD.costo_administracion) AS total,
-			NOW() AS fecha_creacion,AP.id_apartamento,0 as pago,1 as estado
+			fecha AS fecha_creacion,AP.id_apartamento,0 as pago,1 as estado
         FROM apartamentos AP INNER JOIN 
 			administracion AD ON AD.id_administracion=AP.id_administracion
 		WHERE AP.estado=1;
+
 END$$
 
 DELIMITER ;
@@ -86,7 +87,9 @@ CREATE TABLE `apartamentos` (
 
 INSERT INTO `apartamentos` (`id_apartamento`, `valor_cuota`, `id_administracion`, `numero_apartamento`, `numero_personas`, `arrendado`, `estado`) VALUES
 (4, 30000, 1, 101, 3, 2, b'1'),
-(6, 40000, 1, 102, 5, 1, b'1');
+(6, 50000, 1, 102, 5, 1, b'1'),
+(16, 12300, 1, 106, 5, 0, b'1'),
+(17, 89000, 1, 201, 0, 0, b'1');
 
 -- --------------------------------------------------------
 
@@ -96,8 +99,19 @@ INSERT INTO `apartamentos` (`id_apartamento`, `valor_cuota`, `id_administracion`
 
 CREATE TABLE `apartamento_usuario` (
   `id_usuario` int(11) NOT NULL,
-  `id_apartamento` int(11) NOT NULL
+  `id_apartamento` int(11) NOT NULL,
+  `estado` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `apartamento_usuario`
+--
+
+INSERT INTO `apartamento_usuario` (`id_usuario`, `id_apartamento`, `estado`) VALUES
+(3, 4, 1),
+(3, 6, 1),
+(3, 16, 1),
+(9, 17, 1);
 
 -- --------------------------------------------------------
 
@@ -124,7 +138,7 @@ CREATE TABLE `factura` (
   `fecha_creacion` date NOT NULL,
   `id_apartamento` int(11) NOT NULL,
   `pago` bit(1) NOT NULL,
-  `mora` bit(1) NOT NULL,
+  `mora` bit(1) NOT NULL DEFAULT b'0',
   `estado` bit(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -133,30 +147,60 @@ CREATE TABLE `factura` (
 --
 
 INSERT INTO `factura` (`id_factura`, `total`, `fecha_creacion`, `id_apartamento`, `pago`, `mora`, `estado`) VALUES
-(47, 20000, '2021-06-18', 4, b'0', b'0', b'1'),
-(48, 20000, '2021-06-18', 6, b'0', b'0', b'1');
+(47, 20000, '2021-06-18', 4, b'0', b'1', b'1'),
+(48, 20000, '2021-06-18', 6, b'0', b'1', b'1'),
+(49, 20000, '2021-06-19', 4, b'0', b'1', b'1'),
+(50, 20000, '2021-06-19', 6, b'0', b'1', b'1'),
+(72, 20000, '2021-06-20', 4, b'0', b'0', b'1'),
+(73, 20000, '2021-06-20', 6, b'0', b'0', b'1'),
+(74, 12300, '2021-06-20', 16, b'0', b'0', b'1'),
+(75, 89000, '2021-06-20', 17, b'0', b'0', b'1');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `usuarios`
+-- Estructura de tabla para la tabla `propietarios`
 --
 
-CREATE TABLE `usuarios` (
+CREATE TABLE `propietarios` (
   `id_usuario` int(11) NOT NULL,
   `nombre` varchar(50) NOT NULL,
   `apellidos` varchar(50) NOT NULL,
+  `identificacion` int(11) NOT NULL,
+  `telefono` varchar(10) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `contraseña` varchar(100) NOT NULL,
-  `estado` bit(1) NOT NULL
+  `estado` bit(1) NOT NULL,
+  `id_tipo_documento` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `usuarios`
+-- Volcado de datos para la tabla `propietarios`
 --
 
-INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellidos`, `email`, `contraseña`, `estado`) VALUES
-(3, 'test', 'test', 'test@gmail.com', 'pass', b'1');
+INSERT INTO `propietarios` (`id_usuario`, `nombre`, `apellidos`, `identificacion`, `telefono`, `email`, `estado`, `id_tipo_documento`) VALUES
+(3, 'test', 'test', 100277615, '0000000000', 'zapatadani28@gmail.com', b'1', 1),
+(9, 'Daniel', 'pombo', 3909090, '89898989', 'mariangelsc0605@gmail.com', b'1', 1),
+(10, 'Raqueta', 'Vasallos', 90909090, '89898989', 'daniel@gmail.com', b'1', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_documento`
+--
+
+CREATE TABLE `tipo_documento` (
+  `id_tipo_documento` int(11) NOT NULL,
+  `Descripcion` varchar(25) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `tipo_documento`
+--
+
+INSERT INTO `tipo_documento` (`id_tipo_documento`, `Descripcion`) VALUES
+(1, 'cedula de ciudadania'),
+(2, 'Tarjeta de identidad'),
+(3, 'tarjeta de extranjeria');
 
 --
 -- Índices para tablas volcadas
@@ -198,10 +242,19 @@ ALTER TABLE `factura`
   ADD KEY `id_apartamento` (`id_apartamento`);
 
 --
--- Indices de la tabla `usuarios`
+-- Indices de la tabla `propietarios`
 --
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id_usuario`);
+ALTER TABLE `propietarios`
+  ADD PRIMARY KEY (`id_usuario`),
+  ADD UNIQUE KEY `identificacion` (`identificacion`),
+  ADD KEY `id_tipo_documento_2` (`id_tipo_documento`),
+  ADD KEY `id_tipo_documento_3` (`id_tipo_documento`);
+
+--
+-- Indices de la tabla `tipo_documento`
+--
+ALTER TABLE `tipo_documento`
+  ADD PRIMARY KEY (`id_tipo_documento`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -217,19 +270,25 @@ ALTER TABLE `administracion`
 -- AUTO_INCREMENT de la tabla `apartamentos`
 --
 ALTER TABLE `apartamentos`
-  MODIFY `id_apartamento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_apartamento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
--- AUTO_INCREMENT de la tabla `usuarios`
+-- AUTO_INCREMENT de la tabla `propietarios`
 --
-ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `propietarios`
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT de la tabla `tipo_documento`
+--
+ALTER TABLE `tipo_documento`
+  MODIFY `id_tipo_documento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas
@@ -245,7 +304,7 @@ ALTER TABLE `apartamentos`
 -- Filtros para la tabla `apartamento_usuario`
 --
 ALTER TABLE `apartamento_usuario`
-  ADD CONSTRAINT `apartamento_usuario_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `apartamento_usuario_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `propietarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `apartamento_usuario_ibfk_2` FOREIGN KEY (`id_apartamento`) REFERENCES `apartamentos` (`id_apartamento`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
@@ -260,11 +319,17 @@ ALTER TABLE `comprobante`
 ALTER TABLE `factura`
   ADD CONSTRAINT `factura_ibfk_1` FOREIGN KEY (`id_apartamento`) REFERENCES `apartamentos` (`id_apartamento`) ON DELETE CASCADE ON UPDATE CASCADE;
 
+--
+-- Filtros para la tabla `propietarios`
+--
+ALTER TABLE `propietarios`
+  ADD CONSTRAINT `propietarios_ibfk_1` FOREIGN KEY (`id_tipo_documento`) REFERENCES `tipo_documento` (`id_tipo_documento`);
+
 DELIMITER $$
 --
 -- Eventos
 --
-CREATE DEFINER=`root`@`localhost` EVENT `ValidarFacturas` ON SCHEDULE EVERY 1 DAY STARTS '2021-06-18 16:26:51' ON COMPLETION NOT PRESERVE ENABLE DO call GenerarFacturas(now())$$
+CREATE DEFINER=`root`@`localhost` EVENT `ValidarFacturas` ON SCHEDULE EVERY 1 DAY STARTS '2021-06-18 08:00:00' ON COMPLETION NOT PRESERVE ENABLE DO call GenerarFacturas(now())$$
 
 DELIMITER ;
 COMMIT;

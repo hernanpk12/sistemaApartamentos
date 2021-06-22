@@ -28,14 +28,9 @@
 <script src="statics/plugins/chart.js/Chart.min.js"></script>
 <!-- Sparkline -->
 <script src="statics/plugins/sparklines/sparkline.js"></script>
-<!-- JQVMap -->
-<script src="statics/plugins/jqvmap/jquery.vmap.min.js"></script>
-<script src="statics/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-<!-- jQuery Knob Chart -->
-<script src="statics/plugins/jquery-knob/jquery.knob.min.js"></script>
-<!-- daterangepicker -->
+
 <script src="statics/plugins/moment/moment.min.js"></script>
-<script src="statics/plugins/daterangepicker/daterangepicker.js"></script>
+
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="statics/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 <!-- Summernote -->
@@ -48,7 +43,14 @@
 <script src="statics/dist/js/demo.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="statics/dist/js/pages/dashboard.js"></script>
+  <script src="https://cdn.emailjs.com/dist/email.min.js" type="text/javascript">
+  </script>
+  <!-- SweetAlert2 -->
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- mailjs -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@2/dist/email.min.js"></script>
 
-<script src="statics/js/index.js"></script>
+  <script src="statics/js/mails.js"></script>
+  <script src="statics/js/index.js"></script>
 </body>
 </html>
