@@ -48,9 +48,9 @@
               $db1=new Db();
               $db1->conectarDB();
               $id_apartment = $apartment['id_apartamento'];
-              $sql = "select P.email,P.nombre,A.id_apartamento,A.valor_cuota,A.numero_apartamento,A.numero_personas
+              $sql = "SELECT P.email,P.nombre,A.id_apartamento,A.valor_cuota,A.numero_apartamento,A.numero_personas
               ,f.id_factura,f.total,f.mora,f.fecha_creacion
-              from factura F inner join apartamentos A on A.id_apartamento=F.id_apartamento inner join apartamento_usuario AU on AU.id_apartamento=A.id_apartamento inner join propietarios P on P.id_usuario=AU.id_usuario where A.id_apartamento={$id_apartment}";
+              FROM factura F INNER JOIN apartamentos A ON A.id_apartamento=F.id_apartamento INNER JOIN apartamento_usuario AU ON AU.id_apartamento=A.id_apartamento INNER JOIN propietarios P ON P.id_usuario=AU.id_usuario where A.id_apartamento={$id_apartment}";
               $facturas = $db1->getData($sql);
               $jsonFacturas = json_encode ((array) $facturas);
               $jsonApartamentos = json_encode((array) $apartment);
@@ -105,7 +105,7 @@
           <div class="modal-body">
               <div class="row">
                 <div class="col-sm-12 col-md-6">
-                  <label for="cuotaInput" class="form-label">Numero del apartamento</label>
+                  <label for="numeroApartamentoInput" class="form-label">Numero del apartamento</label>
                   <input type="text" class="form-control" id="numeroApartamentoInput" name="numeroApartamento" required>
                 </div>
                 <div class="col-sm-12 col-md-6">

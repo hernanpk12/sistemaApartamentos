@@ -107,7 +107,7 @@
             </a>
           </li>
           <li class="nav-item menu-open">
-            <a href="facturas.php" class="nav-link">
+            <a href="administracion.php" class="nav-link">
               <i class="nav-icon fas fa-dollar-sign"></i>
               <p>
                 Valor de administración 

@@ -48,7 +48,12 @@
           <?php 
             $sql1="SELECT A.id_apartamento,A.valor_cuota,A.numero_apartamento,A.numero_personas,A.arrendado FROM `propietarios` p inner join apartamento_usuario ap on ap.id_usuario=p.id_usuario inner join apartamentos a on a.id_apartamento=ap.id_apartamento where p.identificacion='{$propietario['identificacion']}'";
             $apartamentos=$db->getData($sql1);
-            //print_r($apartamentos);
+            $id_apartment = isset($apartamentos[0]['id_apartamento'])?$apartamentos[0]['id_apartamento']:'';
+
+            $sqlFacturas = "SELECT f.id_factura,f.total,f.mora,f.fecha_creacion FROM factura F INNER JOIN apartamentos A ON A.id_apartamento=F.id_apartamento INNER JOIN apartamento_usuario AU ON AU.id_apartamento=A.id_apartamento INNER JOIN propietarios P ON P.id_usuario=AU.id_usuario where A.id_apartamento={$id_apartment}";
+            $facturas = $db->getData($sqlFacturas);
+
+            $jsonFacturas = json_encode((array) $facturas);
             $jsonPropietario=json_encode((array) $propietario);
             $jsonApartamentos=json_encode ((array) $apartamentos);
             ?>
@@ -151,7 +156,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <form action="">
+          <form action="controller/updatePropietario.php" method="POST">
             <div class="row">
               <div class="col-sm-12 col-md-6">
                   <label for="nombreEdit" class="form-label">Nombre: </label>
@@ -165,7 +170,7 @@
             <div class="row">
               <div class="col-sm-12 col-md-6">
                 <label for="tipo_identificacionEdit" class="form-label">tipo de documento</label>
-                <select class="form-control" id="tipo_identificacionEdit" name="tipo_identificacionEdit" required>
+                <select class="form-control" id="tipo_identificacionEdit" name="tipo_identificacionEdit" disabled required>
                   <option value="1">Cedula de ciudadania</option>
                   <option value="2">Tarjeta de identidad</option>
                   <option value="3">Tarjeta de extranjeria</option>
@@ -173,7 +178,7 @@
               </div>
               <div class="col-sm-12 col-md-6">
                 <label for="identificacionEdit" class="form-label">Identificación: </label>
-                <input type="number" class="form-control" id="identificacionEdit" name="identificacionEdit" required>
+                <input type="number" class="form-control" id="identificacionEdit" name="identificacionEdit" readonly required>
               </div>
             </div>
             <div class="row">
@@ -256,6 +261,30 @@
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
             <button type="button" class="btn btn-success" onclick="enviarEmail()">Enviar</button>
           </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+  <div class="modal fade" id="modal-facturas-apartment">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Facturas propietario</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="facturas" class="row">
+          
+          </div>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-notificacion" id="notificacion">Enviar Correo</button>
+        </div>
       </div>
       <!-- /.modal-content -->
     </div>

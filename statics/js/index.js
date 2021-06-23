@@ -45,8 +45,6 @@ const detailApartment= (apartments,billing)=>{
             </div>`;
             facturas.innerHTML+=template
     });
-    console.log(apartments);
-    console.log(billing);
     idApartamento.value=apartments.id_apartamento;
     cuota.value=apartments.valor_cuota;
     personas.value=apartments.numero_personas;
@@ -102,7 +100,7 @@ const detailPropietario=(apartments,propietario)=>{
                         <p>
                             ${estado}
                             <br>
-                            Habitado: <?php echo($apartment['numero_personas']);?> personas
+                            Habitado: ${element.numero_personas} personas
                             <br>
                             Cuota: <?php echo($apartment['valor_cuota']);?>$
                         </p>
@@ -110,7 +108,6 @@ const detailPropietario=(apartments,propietario)=>{
                         <div class="icon">
                         <i class="fas fa-building"></i>
                         </div>
-                        <a href="#" class="small-box-footer">mas información<i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>`;
             sectionApartments.innerHTML+=template
@@ -118,8 +115,6 @@ const detailPropietario=(apartments,propietario)=>{
     btnNotificacion.onclick=(e)=>{
         let emailEnvio =document.getElementById('emailNotificacion');
         let nameEnvio =document.getElementById('name');
-        // console.log(emailEnvio);
-        // console.log(nameEnvio);
         emailEnvio.value=propietario.email;
         nameEnvio.value=propietario.nombre;
     };

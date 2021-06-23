@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-06-2021 a las 03:53:11
+-- Tiempo de generación: 23-06-2021 a las 05:16:56
 -- Versión del servidor: 10.4.11-MariaDB
 -- Versión de PHP: 7.4.2
 
@@ -18,6 +18,8 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
+CREATE OR REPLACE DATABASE `sistemaapartamentos`
+
 --
 -- Base de datos: `sistemaapartamentos`
 --
@@ -26,16 +28,13 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ActualizarMora` (IN `fecha` DATE)  NO SQL
-BEGIN
-    UPDATE factura SET mora=1 where DATEDIFF(fecha,fecha_creacion)>1 and pago=0 and mora=0 and estado=1;
-END$$
-
 CREATE DEFINER=`root`@`localhost` PROCEDURE `GenerarFacturas` (IN `fecha` DATE)  BEGIN
-	    UPDATE factura SET mora=1 where DATEDIFF(fecha,fecha_creacion)>=1 and pago=0 and mora=0 and estado=1;
+	SELECT costo_administracion INTO @COSTO_ADMINISTRACION from administracion where estado=1;
 
-INSERT INTO `factura`(`total`, `fecha_creacion`, `id_apartamento`,`pago` ,`estado`) 
-		SELECT IF(AP.arrendado=0, AP.valor_cuota, AD.costo_administracion) AS total,
+	UPDATE factura SET mora=1 where DATEDIFF(fecha,fecha_creacion)>=1 and pago=0 and mora=0 and estado=1;
+
+	INSERT INTO `factura`(`total`, `fecha_creacion`, `id_apartamento`,`pago` ,`estado`) 
+		SELECT IF(AP.arrendado=0, AP.valor_cuota, @COSTO_ADMINISTRACION) AS total,
 			fecha AS fecha_creacion,AP.id_apartamento,0 as pago,1 as estado
         FROM apartamentos AP INNER JOIN 
 			administracion AD ON AD.id_administracion=AP.id_administracion
@@ -63,7 +62,8 @@ CREATE TABLE `administracion` (
 --
 
 INSERT INTO `administracion` (`id_administracion`, `costo_administracion`, `fecha_creacion`, `estado`) VALUES
-(1, 20000, '2021-06-16', b'1');
+(1, 20000, '2020-06-16', b'0'),
+(4, 25000, '2021-06-22', b'1');
 
 -- --------------------------------------------------------
 
@@ -151,10 +151,10 @@ INSERT INTO `factura` (`id_factura`, `total`, `fecha_creacion`, `id_apartamento`
 (48, 20000, '2021-06-18', 6, b'0', b'1', b'1'),
 (49, 20000, '2021-06-19', 4, b'0', b'1', b'1'),
 (50, 20000, '2021-06-19', 6, b'0', b'1', b'1'),
-(72, 20000, '2021-06-20', 4, b'0', b'0', b'1'),
-(73, 20000, '2021-06-20', 6, b'0', b'0', b'1'),
-(74, 12300, '2021-06-20', 16, b'0', b'0', b'1'),
-(75, 89000, '2021-06-20', 17, b'0', b'0', b'1');
+(76, 25000, '2021-06-22', 4, b'0', b'0', b'1'),
+(77, 25000, '2021-06-22', 6, b'0', b'0', b'1'),
+(78, 12300, '2021-06-22', 16, b'0', b'0', b'1'),
+(79, 89000, '2021-06-22', 17, b'0', b'0', b'1');
 
 -- --------------------------------------------------------
 
@@ -178,9 +178,9 @@ CREATE TABLE `propietarios` (
 --
 
 INSERT INTO `propietarios` (`id_usuario`, `nombre`, `apellidos`, `identificacion`, `telefono`, `email`, `estado`, `id_tipo_documento`) VALUES
-(3, 'test', 'test', 100277615, '0000000000', 'zapatadani28@gmail.com', b'1', 1),
-(9, 'Daniel', 'pombo', 3909090, '89898989', 'mariangelsc0605@gmail.com', b'1', 1),
-(10, 'Raqueta', 'Vasallos', 90909090, '89898989', 'daniel@gmail.com', b'1', 2);
+(3, 'test', 'pap', 100277615, '90909090', 'zapatadani28@gmail.com', b'1', 1),
+(9, 'Daniel', 'vvbvb', 3909090, '89898989', 'mariangelsc0605@gmail.com', b'1', 1),
+(10, 'Raqueta', 'rtrtrt', 90909090, '89898989', 'daniel@gmail.com', b'1', 2);
 
 -- --------------------------------------------------------
 
@@ -264,7 +264,7 @@ ALTER TABLE `tipo_documento`
 -- AUTO_INCREMENT de la tabla `administracion`
 --
 ALTER TABLE `administracion`
-  MODIFY `id_administracion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_administracion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `apartamentos`
@@ -276,7 +276,7 @@ ALTER TABLE `apartamentos`
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 
 --
 -- AUTO_INCREMENT de la tabla `propietarios`
