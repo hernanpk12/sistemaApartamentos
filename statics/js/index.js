@@ -43,7 +43,7 @@ const detailApartment= (apartments,billing)=>{
                 <div class="icon">
                     <i class="fas fa-receipt"></i>
                 </div>
-                <a href="#" class="small-box-footer"  data-toggle="modal" data-target="#modal-detail-apartment">imprimir<i class="fas fa-arrow-circle-right"></i></a>
+                <a href="/sistemaApartamentos/FacturaTemplate.php?id_factura=${element.id_factura}" class="small-box-footer" target="_blank">imprimir<i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>`;
             facturas.innerHTML+=template
