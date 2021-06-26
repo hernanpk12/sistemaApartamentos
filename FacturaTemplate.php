@@ -121,7 +121,9 @@ if(isset($_GET['id_factura'])){
 				</div>
 			
 		</div>
-	</div>		
+	</div>
+	<a  href="pdf.php"><i class="fa fa-download"></i> Descargar archivo PDF</a>
+		
 </div>
 </div>
 
