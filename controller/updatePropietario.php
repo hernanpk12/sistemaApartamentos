@@ -16,7 +16,17 @@
         }        
         header("Location: /sistemaApartamentos/propietarios.php");
         die();
-
+    }else if(isset($_POST['delete'])){
+        try{
+            $identificacion=$_POST['identificacionEdit'];
+            $sql = "UPDATE `propietarios` SET estado=0 WHERE identificacion=$identificacion";
+            $db->updateData($sql);
+        }catch(Exception $e){
+            
+        } 
+        header("Location: /sistemaApartamentos/propietarios.php");
+        die();
+        //$apartments = $db->updateData($sql);
     }
 
     

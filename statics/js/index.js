@@ -1,11 +1,14 @@
 const detailApartment= (apartments,billing)=>{
-    
+    console.log(apartments);
     let idApartamento = document.getElementById('id_apartamentpo');
     let cuota = document.getElementById('cuotaInput');
     let personas = document.getElementById('personasInput');
     let facturas = document.getElementById('facturas');
     let estado = document.getElementById('habitado');
     let btnNotificacion=document.getElementById('notificacion');
+    let apartmentDelete=document.getElementById('deleteApartment');
+    apartmentDelete.href=`http://localhost/sistemaapartamentos/controller/deleteApartment.php?id=${apartments.id_apartamento}`;
+    deleteApartment
     idApartamentpo='';
     cuota.value='';
     personas.value='';
@@ -60,6 +63,7 @@ const detailApartment= (apartments,billing)=>{
 }
 
 const detailPropietario=(apartments,propietario)=>{
+
     let sectionApartments=document.getElementById('apartments');
     let nombre = document.getElementById('nombreEdit');
     let apellidos = document.getElementById('apellidoEdit');
@@ -120,6 +124,11 @@ const detailPropietario=(apartments,propietario)=>{
     };
 }
 
+const adminFacturas = (factura)=>{
+    console.log(factura);
+    let idFactura=document.getElementById('id_factura');
+    idFactura.value=factura.id_factura;
+}
 const Toast = swal.mixin({
     toast: true,
     position: 'top-end',

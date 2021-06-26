@@ -3,7 +3,7 @@
 
     $db = new DB();
     $db->conectarDB();
-    $sql = 'SELECT*FROM apartamentos A INNER JOIN administracion AD ON AD.id_administracion=A.id_administracion';
+    $sql = 'SELECT*FROM apartamentos A INNER JOIN administracion AD ON AD.id_administracion=A.id_administracion WHERE A.estado=1';
     $apartments = $db->getData($sql);
   ?>
   <!-- Content Wrapper. Contains page content -->
@@ -50,7 +50,8 @@
               $id_apartment = $apartment['id_apartamento'];
               $sql = "SELECT P.email,P.nombre,A.id_apartamento,A.valor_cuota,A.numero_apartamento,A.numero_personas
               ,f.id_factura,f.total,f.mora,f.fecha_creacion
-              FROM factura F INNER JOIN apartamentos A ON A.id_apartamento=F.id_apartamento INNER JOIN apartamento_usuario AU ON AU.id_apartamento=A.id_apartamento INNER JOIN propietarios P ON P.id_usuario=AU.id_usuario where A.id_apartamento={$id_apartment}";
+              FROM factura F INNER JOIN apartamentos A ON A.id_apartamento=F.id_apartamento INNER JOIN apartamento_usuario AU ON AU.id_apartamento=A.id_apartamento INNER JOIN propietarios P ON P.id_usuario=AU.id_usuario where A.id_apartamento={$id_apartment} AND F.pago=0 AND F.estado=1";
+              
               $facturas = $db1->getData($sql);
               $jsonFacturas = json_encode ((array) $facturas);
               $jsonApartamentos = json_encode((array) $apartment);
@@ -179,7 +180,7 @@
               </div>
               <div class="col-sm-12 col-md-6 row mt-5">
                   <div class="col-sm-12 col-md-6">
-                    <button type="button" class="btn btn-default form-control" data-dismiss="modal">cancelar</button>
+                    <a id="deleteApartment" class="btn btn-warning form-control">Inhabilitar</a>
                   </div>
                   <div class="col-sm-12 col-md-6">
                     <button type="submit" class="btn btn-primary form-control" name="update">Guardar</button>
@@ -194,7 +195,7 @@
         </div>
         <div class="modal-footer justify-content-between">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-notificacion" id="notificacion">Enviar Correo</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-dismiss="modal" data-target="#modal-notificacion" id="notificacion">Enviar Correo</button>
           </div>
       </div>
       <!-- /.modal-content -->

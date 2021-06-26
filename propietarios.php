@@ -3,7 +3,7 @@
 
     $db = new DB();
     $db->conectarDB();
-    $sql = 'select nombre,apellidos,identificacion,telefono,email,identificacion,id_tipo_documento from propietarios p ';
+    $sql = 'select nombre,apellidos,identificacion,telefono,email,identificacion,id_tipo_documento from propietarios p where p.estado=1';
     $propietarios = $db->getData($sql);
   ?>
   <!-- Content Wrapper. Contains page content -->
@@ -16,7 +16,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">Propietarios</a></li>
               <!-- <li class="breadcrumb-item active">Dashboard v1</li> -->
             </ol>
           </div><!-- /.col -->
@@ -46,7 +46,7 @@
         <div class="row">
           <?php foreach($propietarios as $propietario):?>
           <?php 
-            $sql1="SELECT A.id_apartamento,A.valor_cuota,A.numero_apartamento,A.numero_personas,A.arrendado FROM `propietarios` p inner join apartamento_usuario ap on ap.id_usuario=p.id_usuario inner join apartamentos a on a.id_apartamento=ap.id_apartamento where p.identificacion='{$propietario['identificacion']}'";
+            $sql1="SELECT A.id_apartamento,A.valor_cuota,A.numero_apartamento,A.numero_personas,A.arrendado FROM `propietarios` p inner join apartamento_usuario ap on ap.id_usuario=p.id_usuario inner join apartamentos a on a.id_apartamento=ap.id_apartamento where p.identificacion='{$propietario['identificacion']}' and A.estado=1";
             $apartamentos=$db->getData($sql1);
             $id_apartment = isset($apartamentos[0]['id_apartamento'])?$apartamentos[0]['id_apartamento']:'';
 
@@ -192,7 +192,10 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-sm-12">
+              <div class="col-sm-12 col-md-6">
+                <button type="submit" class="btn btn-warning form-control mt-3" name="delete">Inhabilitar</button>
+              </div>
+              <div class="col-sm-12 col-md-6">
                 <button type="submit" class="btn btn-primary form-control mt-3" name="update">Guardar</button>
               </div>
             </div>
@@ -204,7 +207,7 @@
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-notificacion" id="notificacion">Enviar Correo</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal"  data-dismiss="modal" data-target="#modal-notificacion" id="notificacion">Enviar Correo</button>
         </div>
       </div>
       <!-- /.modal-content -->
