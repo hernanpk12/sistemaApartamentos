@@ -1,5 +1,6 @@
-  <?php require_once('layouts/header.php')?>
-  <?php require_once('model/DB.php');
+  <?php 
+  require_once('layouts/header.php');
+  require_once('model/DB.php');
 
     $db = new DB();
     $db->conectarDB();

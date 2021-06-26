@@ -93,5 +93,21 @@ class DB
             throw new Exception('Ha ocurrido un error durante al tratar de actualizar un registro');
         }
     }
+
+    public function login($email,$contraseña){
+        
+        $conexionDB= $this->conectarDB();
+   
+        $query = $conexionDB->prepare("SELECT email,username FROM usuarios WHERE email= ? and contraseña= ? and estado=1");
+        $query->bindParam(1, $email);
+        $query->bindParam(2, $contraseña);
+        
+    
+        $query->execute();
+    
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+    
+        return $result;
+    }
 }
 ?>

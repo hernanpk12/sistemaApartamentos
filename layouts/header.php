@@ -1,3 +1,12 @@
+<?php
+  session_start();
+  if(!isset($_SESSION['user'])){
+    header("Location: /sistemaApartamentos/iniciar_sesion.php");
+  }
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,7 +51,7 @@
         <a href="index.html" class="nav-link">Home</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contact</a>
+        <a href="/sistemaApartamentos/controller/logout.php" class="nav-link">Logout</a>
       </li>
     </ul>
 
@@ -72,7 +81,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="info">
-          <a href="#" class="d-block">Name of user</a>
+          <a href="#" class="d-block"><?php print_r($_SESSION['user']['username']);?></a>
         </div>
       </div>
 
@@ -111,6 +120,14 @@
               <i class="nav-icon fas fa-dollar-sign"></i>
               <p>
                 Valor de administración 
+              </p>
+            </a>
+          </li>
+          <li class="nav-item menu-open">
+            <a href="registrarse.php" class="nav-link">
+              <i class="nav-icon far fa-keyboard"></i>
+              <p>
+                Registrarse
               </p>
             </a>
           </li>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-06-2021 a las 05:16:56
+-- Tiempo de generación: 26-06-2021 a las 06:37:19
 -- Versión del servidor: 10.4.11-MariaDB
 -- Versión de PHP: 7.4.2
 
@@ -17,8 +17,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
-
-CREATE OR REPLACE DATABASE `sistemaapartamentos`
 
 --
 -- Base de datos: `sistemaapartamentos`
@@ -86,7 +84,7 @@ CREATE TABLE `apartamentos` (
 --
 
 INSERT INTO `apartamentos` (`id_apartamento`, `valor_cuota`, `id_administracion`, `numero_apartamento`, `numero_personas`, `arrendado`, `estado`) VALUES
-(4, 30000, 1, 101, 3, 2, b'1'),
+(4, 30000, 1, 101, 3, 2, b'0'),
 (6, 50000, 1, 102, 5, 1, b'1'),
 (16, 12300, 1, 106, 5, 0, b'1'),
 (17, 89000, 1, 201, 0, 0, b'1');
@@ -122,9 +120,25 @@ INSERT INTO `apartamento_usuario` (`id_usuario`, `id_apartamento`, `estado`) VAL
 CREATE TABLE `comprobante` (
   `id_comprobante` int(11) NOT NULL,
   `id_factura` int(11) NOT NULL,
-  `url_comprobante` int(11) NOT NULL,
+  `url_comprobante` varchar(500) NOT NULL,
   `estado` bit(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `comprobante`
+--
+
+INSERT INTO `comprobante` (`id_comprobante`, `id_factura`, `url_comprobante`, `estado`) VALUES
+(13, 47, '/sistemaApartamentos/statics/uploads/comprobantes/f6ef019da023028059df8637889b1b09.jpg', b'1'),
+(14, 49, '/sistemaApartamentos/statics/uploads/comprobantes/56ed86ffe0d640039db8a53e5f70aeed.jpg', b'1');
+
+--
+-- Disparadores `comprobante`
+--
+DELIMITER $$
+CREATE TRIGGER `si_pago` AFTER INSERT ON `comprobante` FOR EACH ROW UPDATE factura SET pago=1 WHERE id_factura=NEW.id_factura
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -147,11 +161,11 @@ CREATE TABLE `factura` (
 --
 
 INSERT INTO `factura` (`id_factura`, `total`, `fecha_creacion`, `id_apartamento`, `pago`, `mora`, `estado`) VALUES
-(47, 20000, '2021-06-18', 4, b'0', b'1', b'1'),
+(47, 20000, '2021-06-18', 4, b'1', b'1', b'1'),
 (48, 20000, '2021-06-18', 6, b'0', b'1', b'1'),
-(49, 20000, '2021-06-19', 4, b'0', b'1', b'1'),
+(49, 20000, '2021-06-19', 4, b'1', b'1', b'1'),
 (50, 20000, '2021-06-19', 6, b'0', b'1', b'1'),
-(76, 25000, '2021-06-22', 4, b'0', b'0', b'1'),
+(76, 25000, '2021-06-22', 4, b'0', b'0', b'0'),
 (77, 25000, '2021-06-22', 6, b'0', b'0', b'1'),
 (78, 12300, '2021-06-22', 16, b'0', b'0', b'1'),
 (79, 89000, '2021-06-22', 17, b'0', b'0', b'1');
@@ -201,6 +215,30 @@ INSERT INTO `tipo_documento` (`id_tipo_documento`, `Descripcion`) VALUES
 (1, 'cedula de ciudadania'),
 (2, 'Tarjeta de identidad'),
 (3, 'tarjeta de extranjeria');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `id_usuario` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `apellidos` varchar(50) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `contraseña` varchar(50) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellidos`, `username`, `email`, `contraseña`, `estado`) VALUES
+(1, 'Test', 'Test', 'TestUser', 'test@gmail.com', 'pass', 1),
+(4, 'test1', 'test1', 'test1', 'test1@gmail.com', 'pass', 1);
 
 --
 -- Índices para tablas volcadas
@@ -257,6 +295,12 @@ ALTER TABLE `tipo_documento`
   ADD PRIMARY KEY (`id_tipo_documento`);
 
 --
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id_usuario`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -271,6 +315,12 @@ ALTER TABLE `administracion`
 --
 ALTER TABLE `apartamentos`
   MODIFY `id_apartamento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT de la tabla `comprobante`
+--
+ALTER TABLE `comprobante`
+  MODIFY `id_comprobante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `factura`
@@ -289,6 +339,12 @@ ALTER TABLE `propietarios`
 --
 ALTER TABLE `tipo_documento`
   MODIFY `id_tipo_documento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restricciones para tablas volcadas
